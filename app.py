@@ -2,20 +2,21 @@ import glob
 import random
 import requests
 import os
+from config import config
 
 
 # Клас для автоматического постинга
 class PublicParserClass:
-    user_token = os.environ['user_token']
-    version = 5.101
-    group_id = os.environ['group_id']
+    user_token = config['user_token'] or os.environ['user_token']
+    version = 5.103
+    group_id = config['group_id'] or os.environ['group_id']
     url = 'https://api.vk.com/method/'
-    user_id = os.environ['user_id']
+    user_id = config['user_id'] or os.environ['user_id']
 
     def post_my_photo(self):
 
         # Случайный выбор фотографии из директивы img
-        all_photos = glob.glob('img/*.jpg')
+        all_photos = glob.glob('img2/*.jpg')
         if all_photos != 0:
             photo_url = random.choice(all_photos)
 
@@ -44,7 +45,7 @@ class PublicParserClass:
             post = requests.get(self.url + 'wall.post', params={
                 'access_token': self.user_token,
                 'v': self.version,
-                'owner_id': -self.group_id,
+                'owner_id': '-' + self.group_id,
                 'from_group': 1,
                 'attachments': 'photo' + str(self.user_id) + '_' + str(photo_id),
                 'signed': 0
